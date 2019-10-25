@@ -43,24 +43,21 @@ def draw_bonus():
     while True:  # To prevent bug if bonus will be drawn in the snake head or snake tail
         bonus_x = rnd(3, 50, 1)
         bonus_y = rnd(3, 35, 1)
-        Breaking = True
+        breaking = True
         if 20 * bonus_x == canv.coords(head)[2] and 20 * bonus_y == canv.coords(head)[3]:
-            Breaking = False
+            breaking = False
         for i in range(len(tail)):
             if tail[i][0] != "":
                 if 20 * bonus_x == canv.coords(tail[i][0])[2] and 20 * bonus_y == canv.coords(tail[i][0])[3]:
-                    Breaking = False
-        if Breaking:
+                    breaking = False
+        if breaking:
             break
     bonus = canv.create_oval(20 * bonus_x - 15, 20 * bonus_y - 15, 20 * bonus_x - 5, 20 * bonus_y - 5, fill="Red")
 
 
 def setup():
     """this is setup function"""
-    global game_over, score, head, direction, button_new_game, button_exit
-    canv.delete(ALL)
-    button_new_game.destroy()
-    button_exit.destroy()
+    global game_over, score, head, direction
     game_over = False
     score = 0
     direction = ""
@@ -140,26 +137,6 @@ def moving():
             canv.move(tail[i][0], 20, 0)  # Move part of the tail right
 
 
-def interpretate_events():
-    """This function interpretate first event in queue and then clean all list of the events"""
-    global direction, Pause, events
-    if len(events) != 0:
-        if events[0].keycode == 38 and direction != "down":
-            direction = "up"
-        if events[0].keycode == 40 and direction != "up":
-            direction = "down"
-        if events[0].keycode == 37 and direction != "right":
-            direction = "left"
-        if events[0].keycode == 39 and direction != "left":
-            direction = "right"
-        if events[0].keycode == 32:  # Put the game on pause if you push space button
-            if Pause:
-                Pause = False
-            else:
-                Pause = True
-        events.clear()
-
-
 def game():
     """main function of the game, is called every 50 ms"""
     global Pause, score, text, file, velocity
@@ -191,7 +168,7 @@ def get_gamer_name():
 
 def get_velocity():
     global label, button_enter, enter_velocity, velocity
-    velocity = int(50 / ((float(enter_velocity.get()) + 0.01)/100))
+    velocity = int(50 / ((float(enter_velocity.get()) + 0.01) / 100))
     if velocity < 50:
         velocity = 50
     enter_velocity.destroy()
@@ -202,7 +179,10 @@ def get_velocity():
 
 def new_game():
     """function which start new game and control gamer nickname and game speed"""
-    global gamer_name, enter_name, label, button_enter, velocity, enter_velocity
+    global gamer_name, enter_name, label, button_enter, velocity, enter_velocity, button_new_game, button_exit
+    canv.delete(ALL)
+    button_new_game.destroy()
+    button_exit.destroy()
     if velocity != 0:
         if gamer_name != "":
             setup()
@@ -215,8 +195,8 @@ def new_game():
             button_enter = Button(canv, text="Enter", width=15, height=3, command=get_gamer_name)
             button_enter.pack()
     else:
-        label = Label(canv, text="Enter velocity of the snake in percents\n(100% - max speed, 90% - less speed etc.):"
-                      , font="Arial 26")
+        label = Label(canv, text="Enter velocity of the snake in percents\n(100% - max speed, 90% - less speed etc.):",
+                      font="Arial 26")
         label.pack()
         enter_velocity = Entry(canv, width=100)
         enter_velocity.pack()
@@ -227,15 +207,12 @@ def new_game():
 # Interpretate key press
 
 def key_interpretator(event):
-    """this function interpretate pushing keys"""
+    """this function append key pressed event to the queue of the events"""
     global direction, Pause, events
     events.append(event)
 
 
 root.bind("<KeyPress>", key_interpretator)
-
-
-# canv.bind("<Button-1>", pause)
 
 
 # Make main menu
