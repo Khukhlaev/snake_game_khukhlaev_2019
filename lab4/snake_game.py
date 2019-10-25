@@ -115,6 +115,26 @@ def logic():
         game_over = True
 
 
+def interpretate_events():
+    """This function interpretate first event in queue and then clean all list of the events"""
+    global direction, Pause, events
+    if len(events) != 0:
+        if events[0].keycode == 38 and direction != "down":
+            direction = "up"
+        if events[0].keycode == 40 and direction != "up":
+            direction = "down"
+        if events[0].keycode == 37 and direction != "right":
+            direction = "left"
+        if events[0].keycode == 39 and direction != "left":
+            direction = "right"
+        if events[0].keycode == 32:  # Put the game on pause if you push space button
+            if Pause:
+                Pause = False
+            else:
+                Pause = True
+        events.clear()
+
+
 def moving():
     """this function move all snake (head and tail)"""
     global direction, head, tail
