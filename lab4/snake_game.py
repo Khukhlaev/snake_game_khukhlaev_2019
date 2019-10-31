@@ -166,6 +166,7 @@ def game():
         logic()
         canv.delete(text)
         text = canv.create_text(950, 50, text="Score: " + str(score), font="Arial 14")
+        canv.update()
     if not game_over:
         root.after(velocity, game)
     else:
@@ -236,7 +237,7 @@ root.bind("<KeyPress>", key_interpretator)
 
 
 # Make main menu
-def Exit():
+def exit_from_game():
     sys.exit()
 
 
@@ -247,10 +248,10 @@ def main_menu():
     velocity = 0
     button_new_game = Button(canv, text="New game", width=15, height=3, command=new_game)
     button_new_game.pack()
-    button_exit = Button(canv, text="Exit", width=15, height=3, command=Exit)
+    button_exit = Button(canv, text="Exit", width=15, height=3, command=exit_from_game)
     button_exit.pack()
 
 
 main_menu()
 
-mainloop()
+root.mainloop()
